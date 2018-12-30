@@ -2,7 +2,7 @@ const s3 = require('../../lib/s3')
 
 describe('storage', async ()=>{
     const fileName = 'package.json'
-    const bucket = 'zhengdao'
+    const bucket = process.env.S3_BUCKET
 
     afterAll(async ()=> {
         return await s3.deleteObject({Key: fileName, bucket})
@@ -26,7 +26,7 @@ describe('storage', async ()=>{
 
 describe('storage', async ()=>{
     const fileName = 'test.txt'
-    const bucket = 'zhengdao'
+    const bucket = process.env.S3_BUCKET
 
     afterAll(async ()=> {
         return await s3.deleteObject({Key: fileName, bucket})
