@@ -5,12 +5,15 @@
 $ npm install
 ```
 
+
+
 ## Init Config
 ```
+$ source env.sh
 $ npm initConfig.js
 ```
 
-## Run
+## Check if system is ready
 ```
 $ node fetchOk.js
 ```
