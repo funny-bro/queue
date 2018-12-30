@@ -3,8 +3,8 @@
   const s3 = require('./lib/s3')
   const apis = require('./apis/fetch')
 
-  const cityCode = 'A', townCode = 'A02', sectCode = '0228', landBuild = 555
-  const res = (await apis.cmd({cityCode, townCode, sectCode, landBuild}))
+  const cityCode = 'F', townCode = 'F14', sectCode = '0165', landBuild = 321, project = '0B'
+  const res = (await apis.cmd({cityCode, townCode, sectCode, landBuild, project}))
 
   const {W, filePath} = JSON.parse(res)
 

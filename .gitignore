@@ -23,5 +23,7 @@ public/locator.js
 public/script.js
 
 coverage/*
+temp/**/**.json
+temp/*.json
 output
 env.sh
