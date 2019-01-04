@@ -9,7 +9,7 @@
   const fetchMessage = async () => {  
     const recieveResponse = await sqs.receiveMessage(SQS_URL)
   
-    if(!recieveResponse.Messages[0]) {
+    if(!recieveResponse.Messages || !recieveResponse.Messages[0]) {
       console.log('[WARN] message has null Body: ', recieveResponse)
       return {}
     }
