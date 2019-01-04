@@ -11,11 +11,11 @@
 
 
   for(const sectItem of sectionList){
-    for(let landBuild=302;landBuild<322; landBuild++) {
-      if(landBuild % 10 ===0) {
-        console.log(' landBuild: ', landBuild)
-      }
+    for(let i=1;i<10000; i++) {
       const sectCode = sectItem.value
+
+      var landBuild = i.toString()
+     
       await sqs.sendMessage(SQS_URL, JSON.stringify({cityCode, townCode, sectCode, landBuild, project}))
 
       // const res = (await apis.cmd(cityCode, townCode, sectCode, landBuild))
