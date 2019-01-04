@@ -4,19 +4,19 @@
   const sqs = require('./lib/sqs')
 
   const SQS_URL = process.env.SQS_URL
-
-  const cityCode = 'A', townCode = 'A02'
+  const project = '0B'
+  const cityCode = 'F', townCode = 'F05'
   // const sectCode = '0217'
   const sectionList = require(`./temp/section_${cityCode}_${townCode}.json`)
 
 
   for(const sectItem of sectionList){
-    for(let landBuild=1600;landBuild<100000; landBuild++) {
-      if(landBuild % 30 ===0) {
+    for(let landBuild=302;landBuild<322; landBuild++) {
+      if(landBuild % 10 ===0) {
         console.log(' landBuild: ', landBuild)
       }
       const sectCode = sectItem.value
-      await sqs.sendMessage(SQS_URL, JSON.stringify({cityCode, townCode, sectCode, landBuild}))
+      await sqs.sendMessage(SQS_URL, JSON.stringify({cityCode, townCode, sectCode, landBuild, project}))
 
       // const res = (await apis.cmd(cityCode, townCode, sectCode, landBuild))
   

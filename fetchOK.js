@@ -16,7 +16,7 @@
   if(!html.includes('錯誤')) {
     const fileName = `${cityCode}_${townCode}_${sectCode}_${landBuild}.html`
     console.log('[INFO] Good HTML content, going to upload to S3: ', fileName)
-    const bucket = 'zhengdao'
+    const bucket = process.env.S3_BUCKET
     await s3.uploadByData({data: html, fileName, bucket})
   }
 })()
