@@ -14,7 +14,7 @@
     for(let i=1;i<10000; i++) {
       const sectCode = sectItem.value
 
-      var landBuild = i.toString()
+      const landBuild = `${i}`
      
       await sqs.sendMessage(SQS_URL, JSON.stringify({cityCode, townCode, sectCode, landBuild, project}))
 
