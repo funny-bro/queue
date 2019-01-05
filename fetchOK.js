@@ -6,10 +6,16 @@
   const fetchOk = async (cityCode, townCode, sectCode, landBuild, project) => {
     const res = (await apis.cmd({cityCode, townCode, sectCode, landBuild, project}))
 
-    const {W, filePath} = JSON.parse(res)
+    const {W, ID, USERID, PROJECT, is_qry, is_message} = JSON.parse(res)
   
-    const res2 = await apis.getResult(W, filePath)
-    const html = await res2.text()
+    const resSendData = await apis.sendData(W, ID, USERID, PROJECT, is_qry, is_message)
+    const filePath = await resSendData.text()
+
+    const resRecordToRecord = await apis.recordToRecord(W, filePath)
+    console.log('resRecordToRecord: ', resRecordToRecord)
+
+    const resGetResult = await apis.getResult(W, filePath)
+    const html = await resGetResult.text()
   
     // console.log(html)
   
@@ -25,10 +31,10 @@
   }
 
   const dataList = [
+    {cityCode : 'F', townCode : 'F05', sectCode : '1787', landBuild : 305, project : '0B'},
     {cityCode : 'F', townCode : 'F05', sectCode : '1787', landBuild : 303, project : '0B'},
     {cityCode : 'F', townCode : 'F14', sectCode : '0165', landBuild : 321, project : '0B'},
     {cityCode : 'F', townCode : 'F14', sectCode : '0165', landBuild : 303, project : '0B'},
-    {cityCode : 'F', townCode : 'F05', sectCode : '1787', landBuild : 305, project : '0B'},
   ]
   
   for(let i =0 ;i<dataList.length; i++){
