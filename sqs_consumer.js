@@ -18,21 +18,23 @@
   }
 
   const processQueue = async (Body, ReceiptHandle) => {
-    // console.log('[INFO] Queue is recieved, Body: ', Body)
-
     const res = (await apis.cmd(JSON.parse(Body)))
-    // console.log('[INFO] cmd api is sent: ')
-  
-    const {W, filePath} = JSON.parse(res)
-    if(!filePath) {
+
+    const {W, ID, USERID, PROJECT, is_qry, is_message} = JSON.parse(res)
+    const resSendData = await apis.sendData(W, ID, USERID, PROJECT, is_qry, is_message)
+    const filePath = await resSendData.text()
+    if(filePath.includes(';X32')) {
       console.log('[INFO] empty filePath, removed Queue ')
       return await sqs.deleteMessage(SQS_URL, ReceiptHandle)
     }
-  
-    var data = JSON.parse(Body);
-    const res2 = await apis.getResult(W, filePath)
-    const html = await res2.text()
+
+    const resRecordToRecord = await apis.recordToRecord(W, filePath)
+    // console.log('resRecordToRecord: ', resRecordToRecord)
     
+    const resGetResult = await apis.getResult(W, filePath)
+    const html = await resGetResult.text()
+    const data = JSON.parse(Body);
+
     if(!html.includes('錯誤')) {
       const fileName = `${data.cityCode}_${data.townCode}_${data.sectCode}_${data.landBuild}.html`
       console.log('[INFO] Good HTML content, going to upload to S3: ', fileName)
