@@ -3,13 +3,19 @@
   const s3 = require('./lib/s3')
   const apis = require('./apis/fetch')
 
+
+  const sleep = (second = 3) =>
+    new Promise(resolve => setTimeout(() => resolve(), second * 1000))
+    
   const fetchOk = async (cityCode, townCode, sectCode, landBuild, project) => {
     const res = (await apis.cmd({cityCode, townCode, sectCode, landBuild, project}))
 
-    const {W, ID, USERID, PROJECT, is_qry, is_message} = JSON.parse(res)
+    const {W, ID, USERID, PROJECT, is_qry, is_message, filePath: filePathCmd} = JSON.parse(res)
   
     const resSendData = await apis.sendData(W, ID, USERID, PROJECT, is_qry, is_message)
-    const filePath = await resSendData.text()
+    const filePathSendData = await resSendData.text()
+
+    const filePath = filePathCmd || filePathSendData
 
     const resRecordToRecord = await apis.recordToRecord(W, filePath)
     console.log('resRecordToRecord: ', resRecordToRecord)
@@ -41,6 +47,7 @@
     const {cityCode, townCode, sectCode, landBuild, project} = dataList[i]
     const isOk = await fetchOk(cityCode, townCode, sectCode, landBuild, project)
     console.log( isOk? 'good' : 'bad')
+    await sleep(0.5)
   }
 
 })()
