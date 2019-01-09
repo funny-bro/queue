@@ -107,7 +107,7 @@ const recordToRecord = (w, filePath) => {
         if (!error && response.statusCode == 200) {
           return resolve(body);
         }
-        return reject(error)
+        return reject({error, body})
     });
   })
 

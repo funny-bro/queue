@@ -18,6 +18,7 @@
   "homepage": "https://github.com/funny-bro/queue#readme",
   "dependencies": {
     "aws-sdk": "^2.382.0",
+    "cheerio": "^1.0.0-rc.2",
     "node-fetch": "^2.3.0"
   },
   "devDependencies": {
