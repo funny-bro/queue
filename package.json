@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "initsection": "node script/initDbSection",
+    "initlandbuildmax": "node script/initLandBuildMax",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

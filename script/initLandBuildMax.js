@@ -1,18 +1,18 @@
 (async function(){
-    const SectionDao = require('./db/section/dao')
-    const {fetchSingleDataForFindMaxId} = require('./lib/fetchSingleDataForFindMaxId')
+    const SectionDao = require('../db/section/dao')
+    const {fetchSingleDataForFindMaxId} = require('../lib/fetchSingleDataForFindMaxId')
     const project = '0B'
     const cityCodeArray = ['F','H','A']
     const failCheckCount = 3
     let failCount = 0
 
     for(let i = 0;i<cityCodeArray.length;i++) {
-        const areasList = require(`./temp/town_${cityCodeArray[i]}.json`)
+        const areasList = require(`../temp/town_${cityCodeArray[i]}.json`)
     
             for(const areaItem of areasList){
             const townCode = areaItem.code
             const cityCode = cityCodeArray[i]
-            const sectionList = require(`./temp/section_${cityCodeArray[i]}_${townCode}.json`)
+            const sectionList = require(`../temp/section_${cityCodeArray[i]}_${townCode}.json`)
     
             for(const sectItem of sectionList){
                 const sectCode = sectItem.value
