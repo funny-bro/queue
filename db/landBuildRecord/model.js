@@ -10,6 +10,8 @@ const LandBuildRecord = sequelize.define('landBuildRecord', {
   },
   landBuild: {type: Sequelize.STRING, allowNull: false },
   data: {type: Sequelize.STRING, defaultValue: ''},
+  preData: {type: Sequelize.STRING, defaultValue: ''},
+  status: {type: Sequelize.STRING, defaultValue: ''},
   createdAt: Sequelize.DATE,
   updatedAt: Sequelize.DATE,
 });

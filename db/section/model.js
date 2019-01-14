@@ -10,7 +10,7 @@ const section = sequelize.define('section', {
   cityCode: {type: Sequelize.STRING, allowNull: false },
   townCode: {type: Sequelize.STRING, allowNull: false },
   sectCode: {type: Sequelize.STRING, allowNull: false },
-  landBuildMax: {type: Sequelize.BIGINT, defaultValue: 9999 },
+  landBuildMax: {type: Sequelize.BIGINT, defaultValue: 1 },
   project: {type: Sequelize.STRING, allowNull: false },
   createdAt: Sequelize.DATE,
   updatedAt: Sequelize.DATE,
