@@ -25,7 +25,7 @@
     
 
                 let minBuildId = 50
-                let maxBuildId = 50000 
+                let maxBuildId = 30000 
                 let currentBuildId = (minBuildId + maxBuildId)/2
 
                 while(true) {
