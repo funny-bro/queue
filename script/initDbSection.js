@@ -43,4 +43,6 @@
     }
     console.log('[INFO] finished city : ', cityString)
   }
+
+  process.exit()
 })()

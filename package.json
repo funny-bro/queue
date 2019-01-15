@@ -6,6 +6,7 @@
   "scripts": {
     "initsection": "node script/initDbSection",
     "initlandbuildmax": "node script/initLandBuildMax",
+    "sqsprovider": "node sqs_provider.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

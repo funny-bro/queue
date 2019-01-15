@@ -1,67 +1,34 @@
 (async function(){
   const fs = require('fs')
-  const apis = require('./apis/fetch')
   const sqs = require('./lib/sqs')
+  const sectionDao = require('./db/section/dao')
 
   const SQS_URL = process.env.SQS_URL
   const project = '0B'
-  const cityCodeArray = ['A','F','H']
-  // const cityCodeArray = ['F']
-  // const cityCode = 'F', townCode = 'F05'
-  // const sectCode = '0217'
-  // const sectionList = require(`./temp/section_${cityCode}_${townCode}.json`)
 
+  // const SectionDao = require('./db/section/dao')
+  const sequelize = require('./db/init')
 
-  for(let i = 0;i<cityCodeArray.length;i++) {
-    const areasList = require(`./temp/town_${cityCodeArray[i]}.json`)
+  // const res = await sequelize.query("SELECT * FROM zd.sections where updatedAt <  DATE_ADD(CURDATE(), INTERVAL -1 DAY)")
+  const res = await sequelize.query("SELECT * FROM zd.sections where landBuildMax > 1")
 
-    for(const areaItem of areasList){
-      const townCode = areaItem.code
-      // const maxBuildId = areaItem.max
-
-      const minBuildId = 1
-      const maxBuildId = 10000
-    
-      const cityCode = cityCodeArray[i]
-      const sectionList = require(`./temp/section_${cityCodeArray[i]}_${townCode}.json`)
-
-      for(const sectItem of sectionList){
-
-        for(let j=minBuildId;j<maxBuildId; j++) {
-          const sectCode = sectItem.value
-          const landBuild = `${j}`
-          
-          console.log(`cityCode = ${cityCode}, townCode = ${townCode}, sectCode = ${sectCode}, landBuild = ${landBuild}`)
-        
-          await sqs.sendMessage(SQS_URL, JSON.stringify({cityCode, townCode, sectCode, landBuild, project}))
-        }
-      }
-    }
+  if(!res[0].length) {
+    console.log('[INFO] no more section to process, before one day')
+    return
   }
 
-  // for(const sectItem of sectionList){
-  //   for(let i=1;i<1000; i++) {
-  //     const sectCode = sectItem.value
+  const item = res[0][0]
 
-  //     const landBuild = `${i}`
-     
-  //     await sqs.sendMessage(SQS_URL, JSON.stringify({cityCode, townCode, sectCode, landBuild, project}))
+  const {id, cityCode, townCode, sectCode, landBuildMax} = item
+  console.log(`[INFO] section object found in DB: cityCode = ${cityCode}, townCode = ${townCode}, sectCode = ${sectCode}, landBuildMax = ${landBuildMax}`)
 
-  //     // const res = (await apis.cmd(cityCode, townCode, sectCode, landBuild))
-  
-  //     // const {W, filePath} = JSON.parse(res)
-      
-  //     // if(!filePath) continue
+  for(let i=0;i<=landBuildMax;i++){
+    await sqs.sendMessage(SQS_URL, JSON.stringify({cityCode, townCode, sectCode, i, project}))
+  }
 
-  //     // console.log('filePath: ', filePath)
+  console.log(`[INFO] ${landBuildMax} SQS message is sent.`)
 
-  //     // const res2 = await apis.getResult(W, filePath)
-  //     // const html = await res2.text()
-    
-  //     // console.log(html)
-
-  //     // if(!html.includes('錯誤'))
-  //     //   fs.writeFileSync(`./tempResult/${cityCode}_${townCode}_${sectCode}_${landBuild}.html`, html)
-  //   }
-  // }
+  await sectionDao.update({executedAt: new Date()}, {id})
+  console.log(`[INFO] finished process: cityCode = ${cityCode}, townCode = ${townCode}, sectCode = ${sectCode}, landBuildMax = ${landBuildMax}`)
+  process.exit()
 })()

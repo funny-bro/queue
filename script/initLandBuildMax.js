@@ -2,14 +2,15 @@
     const SectionDao = require('../db/section/dao')
     const {fetchSingleDataForFindMaxId} = require('../lib/fetchSingleDataForFindMaxId')
     const project = '0B'
-    const cityCodeArray = ['F','H','A']
+    // const cityCodeArray = ['F','H','A']
+    const cityCodeArray = ['A']
     const failCheckCount = 3
     let failCount = 0
 
     for(let i = 0;i<cityCodeArray.length;i++) {
         const areasList = require(`../temp/town_${cityCodeArray[i]}.json`)
     
-            for(const areaItem of areasList){
+        for(const areaItem of areasList){
             const townCode = areaItem.code
             const cityCode = cityCodeArray[i]
             const sectionList = require(`../temp/section_${cityCodeArray[i]}_${townCode}.json`)
@@ -71,29 +72,24 @@
                             minBuildId = currentBuildId
                             currentBuildId = parseInt((minBuildId + maxBuildId)/2)
                             console.log(`[INFO] Find available data, failCount reset 0: minBuildId: ${minBuildId},  maxBuildId = ${maxBuildId}, currentBuildId = ${currentBuildId}, `)
-
                         }
                     }
                     catch(err){
                         failCount++
                         currentBuildId++
 
-                        // console.log('find empty data, failCount+=1, failCount = ', failCount)
-                         
                         if(failCount >= failCheckCount) {
                             failCount = 0
 
                             maxBuildId = currentBuildId-failCheckCount
                             currentBuildId = parseInt((minBuildId + maxBuildId)/2)
-
-                            // console.log('minBuildId', minBuildId)
-                            // console.log('maxBuildId', maxBuildId)
-                            // console.log('currentBuildId', currentBuildId)
                         }
                     }
                 }
             }
         }
     }
+
+  process.exit()
 })()
   

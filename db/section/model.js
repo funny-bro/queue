@@ -13,6 +13,7 @@ const section = sequelize.define('section', {
   landBuildMax: {type: Sequelize.BIGINT, defaultValue: 1 },
   project: {type: Sequelize.STRING, allowNull: false },
   createdAt: Sequelize.DATE,
+  executedAt: Sequelize.DATE,
   updatedAt: Sequelize.DATE,
 });
 
