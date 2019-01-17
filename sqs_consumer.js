@@ -2,9 +2,16 @@
   const apis = require('./apis/fetch')
   const sqs = require('./lib/sqs')
   const s3 = require('./lib/s3')
+  const {fetchLandBuild} = require('./lib/fetchSingleData')
+  const landBuildRecordDao = require('./db/landBuildRecord/dao')
   const SQS_URL = process.env.SQS_URL
   let count = 0
   const bucket = process.env.S3_BUCKET
+
+  const today = new Date()
+  const year = today.getUTCFullYear()
+  const month = today.getUTCMonth() +1
+  const date = today.getUTCDate()
 
   const fetchMessage = async () => {  
     const recieveResponse = await sqs.receiveMessage(SQS_URL)
@@ -18,28 +25,51 @@
   }
 
   const processQueue = async (Body, ReceiptHandle) => {
-    const res = (await apis.cmd(JSON.parse(Body)))
+    const data = JSON.parse(Body);
+    const {cityCode,townCode,sectCode,landBuild, project} = data
 
-    const {W, ID, USERID, PROJECT, is_qry, is_message} = JSON.parse(res)
-    const resSendData = await apis.sendData(W, ID, USERID, PROJECT, is_qry, is_message)
-    const filePath = await resSendData.text()
-    if(filePath.includes(';X32')) {
-      console.log('[INFO] empty filePath, removed Queue ')
-      return await sqs.deleteMessage(SQS_URL, ReceiptHandle)
+    console.log('[INFO] processing ',cityCode, townCode, sectCode, landBuild, project)
+
+    let res = {}
+    try {
+      res = await fetchLandBuild(cityCode, townCode, sectCode, landBuild, project) || {}
+    }
+    catch(err) {
+      console.log('[ERROR]', err)
+      res = {}
+    }
+    
+    const {html = '', json = {}} = res
+
+    if(!html || !json) {
+      // console.log('[INFO] empty landBuild')
+      await sqs.deleteMessage(SQS_URL, ReceiptHandle)
+      return 
     }
 
-    const resRecordToRecord = await apis.recordToRecord(W, filePath)
-    // console.log('resRecordToRecord: ', resRecordToRecord)
-    
-    const resGetResult = await apis.getResult(W, filePath)
-    const html = await resGetResult.text()
-    const data = JSON.parse(Body);
-
     if(!html.includes('錯誤')) {
-      const fileName = `${data.cityCode}_${data.townCode}_${data.sectCode}_${data.landBuild}.html`
+      const fileName = `${cityCode}_${townCode}_${sectCode}_${landBuild}.html`
       console.log('[INFO] Good HTML content, going to upload to S3: ', fileName)
       await s3.uploadByData({data: html, fileName, bucket})
       await sqs.deleteMessage(SQS_URL, ReceiptHandle)
+
+      const sectionObj = await SectionDao.findOne({
+        cityCode,
+        townCode,
+        sectCode,
+        project
+      })
+      if(!sectionObj || !sectionObj.id ) {
+        console.log('=============== section not found ================')
+        throw new Error('section not found')
+      }
+
+      await landBuildRecordDao.create({
+        landBuild,
+        data: html,
+        status: 'UPDATING',
+        sectionId: sectionObj.id
+      })
     }
   }
 
