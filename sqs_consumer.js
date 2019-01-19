@@ -4,6 +4,7 @@
   const s3 = require('./lib/s3')
   const {fetchLandBuild} = require('./lib/fetchSingleData')
   const landBuildRecordDao = require('./db/landBuildRecord/dao')
+  const SectionDao = require('./db/section/dao')
   const SQS_URL = process.env.SQS_URL
   let count = 0
   const bucket = process.env.S3_BUCKET
@@ -59,17 +60,23 @@
         sectCode,
         project
       })
+
       if(!sectionObj || !sectionObj.id ) {
         console.log('=============== section not found ================')
         throw new Error('section not found')
       }
-
-      await landBuildRecordDao.create({
-        landBuild,
-        data: html,
-        status: 'UPDATING',
-        sectionId: sectionObj.id
-      })
+      try {
+        await landBuildRecordDao.create({
+          landBuild: `${landBuild}`,
+          data: JSON.stringify(json),
+          html,
+          status: 'UPDATING',
+          sectionId: sectionObj.id
+        })
+      }
+      catch(err){
+        console.log('err:', err)
+      }
     }
   }
 
