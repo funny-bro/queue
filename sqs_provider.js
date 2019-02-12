@@ -9,7 +9,7 @@
   // const SectionDao = require('./db/section/dao')
   const sequelize = require('./db/init')
 
-  const res = await sequelize.query("SELECT * FROM zd.sections where landBuildMax > 1 and updatedAt <  DATE_ADD(CURDATE(), INTERVAL -1 DAY)")
+  const res = await sequelize.query("SELECT * FROM zd.sections where landBuildMax > 100 and cityCode = 'F' and sectCode != 1271 and sectCode != 1300")
   // const res = await sequelize.query("SELECT * FROM zd.sections where landBuildMax > 1")
 
   if(!res[0].length) {
