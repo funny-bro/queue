@@ -50,8 +50,8 @@
 
     if(!html.includes('錯誤')) {
       const fileName = `${cityCode}_${townCode}_${sectCode}_${landBuild}.html`
-      console.log('[INFO] Good HTML content, going to upload to S3: ', fileName)
-      await s3.uploadByData({data: html, fileName, bucket})
+      // console.log('[INFO] Good HTML content, going to upload to S3: ', fileName)
+      // await s3.uploadByData({data: html, fileName, bucket})
       await sqs.deleteMessage(SQS_URL, ReceiptHandle)
 
       const sectionObj = await SectionDao.findOne({
