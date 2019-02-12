@@ -1,9 +1,11 @@
 (async function(){
     const SectionDao = require('../db/section/dao')
+    const landBuildRecordDao = require('../db/landBuildRecord/dao')
+
     const {fetchSingleDataForFindMaxId} = require('../lib/fetchSingleDataForFindMaxId')
     const project = '0B'
     // const cityCodeArray = ['F','H','A']
-    const cityCodeArray = ['A']
+    const cityCodeArray = ['F']
     const failCheckCount = 3
     let failCount = 0
 
@@ -66,12 +68,42 @@
                     }
                    
                     try {
-                        const isOk = await fetchSingleDataForFindMaxId(cityCode, townCode, sectCode, landBuild, project)
-                        if(isOk) {
+
+                        let res = await fetchSingleDataForFindMaxId(cityCode, townCode, sectCode, landBuild, project)
+                        const {html = '', json = {}} = res
+
+                        // const isOk = await fetchSingleDataForFindMaxId(cityCode, townCode, sectCode, landBuild, project)
+                        // if(isOk) {
+                        if(!html.includes('錯誤')) {
                             failCount = 0
                             minBuildId = currentBuildId
                             currentBuildId = parseInt((minBuildId + maxBuildId)/2)
                             console.log(`[INFO] Find available data, failCount reset 0: minBuildId: ${minBuildId},  maxBuildId = ${maxBuildId}, currentBuildId = ${currentBuildId}, `)
+
+                            const sectionObj = await SectionDao.findOne({
+                                cityCode,
+                                townCode,
+                                sectCode,
+                                project
+                              })
+                              if(!sectionObj || !sectionObj.id ) {
+                                console.log('=============== section not found ================')
+                                throw new Error('section not found')
+                              }
+                              try {
+                                await landBuildRecordDao.create({
+                                  landBuild: `${landBuild}`,
+                                  data: JSON.stringify(json),
+                                  html,
+                                  status: 'UPDATING',
+                                  sectionId: sectionObj.id
+                                })
+                                console.log(`[INFO] Find available data, add to DB`)
+                              }
+                              catch(err){
+                                console.log('add to DB err:', err)
+                              }
+
                         }
                     }
                     catch(err){
