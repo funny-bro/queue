@@ -73,10 +73,12 @@
           status: 'UPDATING',
           sectionId: sectionObj.id
         })
-      }
-      catch(err){
+        console.log('[INFO] data create finish')
+      } catch(err){
         console.log('err:', err)
       }
+    } else {
+      console.log('[ERROR]', '錯誤')
     }
   }
 
