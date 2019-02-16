@@ -5,6 +5,7 @@
   const {fetchLandBuild} = require('./lib/fetchSingleData')
   const landBuildRecordDao = require('./db/landBuildRecord/dao')
   const SectionDao = require('./db/section/dao')
+  const authDao = require('./db/auth/dao')
   const SQS_URL = process.env.SQS_URL
   let count = 0
   const bucket = process.env.S3_BUCKET
@@ -31,6 +32,16 @@
 
     console.log('[INFO] processing ',cityCode, townCode, sectCode, landBuild, project)
 
+
+    // try {
+    //   const authObj = await authDao.findOne({status : 'available'})
+    //   authObj.cooKieValue
+    //   authObj.enuid
+    //   authObj.ensid
+    // } catch(err){
+    //   console.log('err:', err)
+    // }
+    
     let res = {}
     try {
       res = await fetchLandBuild(cityCode, townCode, sectCode, landBuild, project) || {}
@@ -65,15 +76,47 @@
         console.log('=============== section not found ================')
         throw new Error('section not found')
       }
+
       try {
-        await landBuildRecordDao.create({
+        const landBuildRecordOBj = await landBuildRecordDao.findOne({
           landBuild: `${landBuild}`,
-          data: JSON.stringify(json),
-          html,
-          status: 'UPDATING',
-          sectionId: sectionObj.id
+          sectionId: `${sectionObj.id}`
         })
-        console.log('[INFO] data create finish')
+        
+        if(!landBuildRecordOBj) {
+          await landBuildRecordDao.create({
+            landBuild: `${landBuild}`,
+            data: JSON.stringify(json),
+            html,
+            status: 'UPDATING',
+            sectionId: sectionObj.id
+          })
+          console.log('[INFO] data create finish')
+        } else {
+
+        
+          if(landBuildRecordOBj.data === JSON.stringify(json)) {
+
+            await landBuildRecordDao.update({
+              status: 'NO_CHANGE',
+            },{
+              landBuild: `${landBuild}`,
+              sectionId: `${sectionObj.id}`
+            })
+            console.log('[INFO] data update finish, (NO_CHANGE)')
+          } else {
+            await landBuildRecordDao.update({
+              data: JSON.stringify(json),
+              html,
+              status: 'UPDATING',
+            },{
+              landBuild: `${landBuild}`,
+              sectionId: `${sectionObj.id}`
+            })
+            console.log('[INFO] data update finish, (UPDATING)')
+          }
+        }
+
       } catch(err){
         console.log('err:', err)
       }

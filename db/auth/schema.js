@@ -21,6 +21,11 @@ const Auth = {
      type: 'string',
      required: true,
      minLength: 1
+    },
+    status: { 
+     type: 'string',
+     required: true,
+     minLength: 1
     }
   }
 }
