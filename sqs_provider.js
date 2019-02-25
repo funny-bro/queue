@@ -9,6 +9,17 @@
   const DEFAULT_CITY_CODE = 'F'
   const DEFAULT_TOWN_CODE = 'F05'
 
+  const isQueueEmpty = async () => {  
+    const recieveResponse = await sqs.receiveMessage(SQS_URL)
+  
+    if(!recieveResponse.Messages || !recieveResponse.Messages[0]) {
+      console.log('[INFO] message has null Body: ', recieveResponse)
+      return true
+    } else {
+      return false
+    }
+  }
+
   const processSectionList = async (sectionItem) => {
     const {id, cityCode, townCode, sectCode, landBuildMax} = sectionItem
     console.log(`[INFO] section object found in DB: cityCode = ${cityCode}, townCode = ${townCode}, sectCode = ${sectCode}, landBuildMax = ${landBuildMax}`)
@@ -39,10 +50,17 @@
     return
   }
 
-  console.log(`[INFO] found ${response.count} section Object`)
-  const sectionObjectList = response.data
-  for(let i=0;i<sectionObjectList.length;i++) {
-    await processSectionList(sectionObjectList[i])
+  const queueEmpty = await isQueueEmpty()
+  if(queueEmpty) {
+    console.log(`[INFO] found ${response.count} section Object`)
+    const sectionObjectList = response.data
+    for(let i=0;i<sectionObjectList.length;i++) {
+      await processSectionList(sectionObjectList[i])
+    }
+  } else {
+    console.log(`[INFO] queue messages exist`)
   }
+
+  
   process.exit()
 })()
