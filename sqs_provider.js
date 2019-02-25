@@ -1,21 +1,13 @@
 (async function(){
-  const fs = require('fs')
   const sqs = require('./lib/sqs')
   const sectionDao = require('./db/section/dao')
+  const Op = require('Sequelize').Op
 
   const SQS_URL = process.env.SQS_URL
   const project = '0B'
-
-  // const SectionDao = require('./db/section/dao')
-  const sequelize = require('./db/init')
-
-  const res = await sequelize.query("SELECT * FROM zd.sections where landBuildMax > 100 and cityCode = 'F' and townCode = 'F05'")
-  // const res = await sequelize.query("SELECT * FROM zd.sections where landBuildMax > 1")
-
-  if(!res[0].length) {
-    console.log('[INFO] no more section to process, before one day')
-    return
-  }
+  const MIN_LANDBUILD_MAX = 100
+  const DEFAULT_CITY_CODE = 'F'
+  const DEFAULT_TOWN_CODE = 'F05'
 
   const processSectionList = async (sectionItem) => {
     const {id, cityCode, townCode, sectCode, landBuildMax} = sectionItem
@@ -33,8 +25,24 @@
     console.log(`[INFO] finished process: cityCode = ${cityCode}, townCode = ${townCode}, sectCode = ${sectCode}, landBuildMax = ${landBuildMax}`)
   }
 
-  for(let i=0;i<res[0].length;i++) {
-    await processSectionList(res[0][i])
+
+  const response = await sectionDao.findAndCountAll({
+    landBuildMax: {
+      [Op.gt]: MIN_LANDBUILD_MAX,
+    },
+    cityCode: DEFAULT_CITY_CODE,
+    townCode: DEFAULT_TOWN_CODE
+  })
+
+  if(!response.data.length) {
+    console.log('[INFO] no more section to process, before one day')
+    return
+  }
+
+  console.log(`[INFO] found ${response.count} section Object`)
+  const sectionObjectList = response.data
+  for(let i=0;i<sectionObjectList.length;i++) {
+    await processSectionList(sectionObjectList[i])
   }
   process.exit()
 })()
