@@ -1,6 +1,6 @@
 (async function(){
-  const sqs = require('./lib/sqs')
-  const sectionDao = require('./db/section/dao')
+  const sqs = require('../lib/sqs')
+  const sectionDao = require('../db/section/dao')
   const Op = require('Sequelize').Op
 
   const SQS_URL = process.env.SQS_URL
