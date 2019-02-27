@@ -36,14 +36,18 @@
     console.log(`[INFO] finished process: cityCode = ${cityCode}, townCode = ${townCode}, sectCode = ${sectCode}, landBuildMax = ${landBuildMax}`)
   }
 
-
+  const options = {
+    order: [
+      ['updatedAt','ASC']
+    ]
+  }
   const response = await sectionDao.findAndCountAll({
     landBuildMax: {
       [Op.gt]: MIN_LANDBUILD_MAX,
     },
     cityCode: DEFAULT_CITY_CODE,
     townCode: DEFAULT_TOWN_CODE
-  })
+  }, options)
 
   if(!response.data.length) {
     console.log('[INFO] no more section to process, before one day')

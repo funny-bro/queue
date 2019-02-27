@@ -37,9 +37,10 @@ class DaoBase {
 
   findAndCountAll (condition = {}, options = {}) {
     const {model} = this
-    const {limit = 20, offset = 0, isRaw = false} = options
+    const {limit = 20, offset = 0, isRaw = false, order = []} = options
     return model.findAndCountAll({
         where: condition,
+        order: order,
         limit,
         offset
     }).then(res => {
