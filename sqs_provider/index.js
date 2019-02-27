@@ -54,17 +54,16 @@
     return
   }
 
-  const queueEmpty = await isQueueEmpty()
-  if(queueEmpty) {
-    console.log(`[INFO] found ${response.count} section Object`)
-    const sectionObjectList = response.data
-    for(let i=0;i<sectionObjectList.length;i++) {
-      await processSectionList(sectionObjectList[i])
-    }
-  } else {
+  if(!await isQueueEmpty()) {
     console.log(`[INFO] queue messages exist`)
+    process.exit()
+  }
+    
+  console.log(`[INFO] found ${response.count} section Object`)
+  const sectionObjectList = response.data
+  for(let i=0;i<sectionObjectList.length;i++) {
+    await processSectionList(sectionObjectList[i])
   }
 
-  
   process.exit()
 })()

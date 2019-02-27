@@ -41,11 +41,9 @@ const createOrUpdate = async (landBuildInfo = {}, sectInfo = {}) => {
     await landBuildRecordDao.update({
       data: JSON.stringify(json),
       html,
+      preData: landBuildRecordDao.data,
       status: 'UPDATING',
-    },{
-      landBuild: `${landBuild}`,
-      sectionId: `${sectionObj.id}`
-    })
+    },{ id })
     return console.log('[INFO] data update finish, (UPDATING)')
 }
 

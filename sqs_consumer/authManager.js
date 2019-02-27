@@ -38,7 +38,8 @@ class AuthManager {
       return process.exit()
     }
     
-    const {enuid = '', ensid = '', cookieValue = '', id= ''} = authObj
+    const {enuid = '', ensid = '', cookieValue = '', id= '', username = ''} = authObj
+    console.log('[INFO] auth Obj is :', username)
     this.authObj = authObj
     this.enuid = enuid
     this.ensid = ensid
