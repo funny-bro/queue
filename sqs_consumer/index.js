@@ -1,8 +1,8 @@
 (async function(){
   const AuthMag = require('./authManager')
-  const sqsConsumer = require('./sqs_consumer')
+  const sqsConsumerTask = require('./sqs_consumer')
 
-  const am = new AuthMag(sqsConsumer)
+  const am = new AuthMag(sqsConsumerTask)
 
   const main = async () => {
     try {

@@ -1,26 +1,5 @@
 const authDao = require('../db/auth/dao')
 
-// const processConsumber = async (task, isReset) => {
-//   const authObj =  await authDao.findOne({status : 'available'})
-//   const {enuid = '', ensid = '', cookieValue = '', id= ''} = authObj
-
-//   if(!authObj) process.exit()
-  
-//   try {
-//     return task({enuid, ensid, cookieValue, authObj})  
-//   }
-//   catch(err){
-//     console.log('[ERROR] authManager',JSON.stringify(err))
-//     // if(err.isResetAuth) { isReset = true}
-//   }
-
-//   if(isReset) {
-//     await authDao.update({status : 'unavailable'}, {})
-//   }
-
-//   return processConsumber()
-// }
-
 class AuthManager {
   constructor(task){
     this.task = task
@@ -45,11 +24,13 @@ class AuthManager {
     this.ensid = ensid
     this.cookieValue = cookieValue
     this.id = id
+    this.cookieName = process.env.COOKIE_NAME
+    this.domain = process.env.LOGIN_ENTRY
   }
 
   async process(){
-    const {enuid, ensid, cookieValue} = this
-    return this.task({enuid, ensid, cookieValue})
+    const {enuid, ensid, cookieValue, cookieName, domain} = this
+    return this.task({enuid, ensid, cookieValue, cookieName, domain})
   }
 
   async dropCurrentAuthAndRenew(){

@@ -11,10 +11,15 @@
     {cityCode : 'H', townCode : 'H06', sectCode : '0810', landBuild : 222, project : '0B'}, // multiple result
   ]
   
+  const enuid = process.env.ENUID
+  const ensid = process.env.ENSID
+  const cookieValue = process.env.COOKIE_VALUE
+  const authConfig = {enuid, ensid, cookieValue}
+
   for(let i =0 ;i<dataList.length; i++){
     try {
       const {cityCode, townCode, sectCode, landBuild, project} = dataList[i]
-      const response = await fetchLandBuild(cityCode, townCode, sectCode, landBuild, project)
+      const response = await fetchLandBuild(cityCode, townCode, sectCode, landBuild, project, authConfig)
 
       if(response.html && response.json) {
         console.log('good', JSON.stringify(response.json))

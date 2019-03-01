@@ -16,7 +16,7 @@ const fetchMessage = async () => {
   return {Body, ReceiptHandle}
 }
 
-const processQueue = async (Body, ReceiptHandle) => {
+const processQueue = async (Body, ReceiptHandle, authConfig) => {
   const data = JSON.parse(Body);
   const {cityCode,townCode,sectCode,landBuild, project} = data
 
@@ -24,7 +24,7 @@ const processQueue = async (Body, ReceiptHandle) => {
 
   let res = {}
   try {
-    res = await fetchLandBuild(cityCode, townCode, sectCode, landBuild, project) || {}
+    res = await fetchLandBuild(cityCode, townCode, sectCode, landBuild, project, authConfig) || {}
   }
   catch(err) {
     console.log('[ERROR]', err)
@@ -59,13 +59,14 @@ const processQueue = async (Body, ReceiptHandle) => {
   await sqs.deleteMessage(SQS_URL, ReceiptHandle)
 }
 
-const main = async () => {
+const main = async (authConfig) => {
   count +=1 
   if(count%30 ===0) console.log(` -=-=-=-=-=-= processed ${count} messages`)
-  const {Body, ReceiptHandle} = await fetchMessage()
+  const {enuid, ensid, cookieValue} = authConfig
+  const {Body, ReceiptHandle} = await fetchMessage(authConfig)
   if(Body && ReceiptHandle ) {
-    await processQueue(Body, ReceiptHandle)
-    return main()
+    await processQueue(Body, ReceiptHandle, authConfig)
+    return main({enuid, ensid, cookieValue})
   }
   return
 }
