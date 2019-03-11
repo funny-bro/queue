@@ -1,6 +1,6 @@
-const fetch = require('node-fetch')
+const fetch = require('./initFetch')
 const pMg = require('../lib/processManager')
-const request = require('request');
+const rawRequest = require('./rawRequest');
 const querystring = require("querystring");
 
 const cookieName = process.env.COOKIE_NAME
@@ -56,14 +56,7 @@ const cmd = (payload) => {
       body: dataString
   };
   
-  return new Promise((resolve, reject)=>{
-    request(options, (error, response, body) => {
-        if (!error && response.statusCode == 200) {
-          return resolve(body);
-        }
-        return reject(error)
-    });
-  })
+  return rawRequest(options)
 }
 
 const sendData = (w,id,userId,project,isQry,isMessage) => {
@@ -102,15 +95,7 @@ const recordToRecord = (w, filePath) => {
       body: dataString
   };
 
-  return new Promise((resolve, reject)=>{
-    request(options, (error, response, body) => {
-        if (!error && response.statusCode == 200) {
-          return resolve(body);
-        }
-        return reject({error, body})
-    });
-  })
-
+  return rawRequest(options)
 }
 
 const getResult = (W, filePath) => {

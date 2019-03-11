@@ -1,5 +1,5 @@
-const fetch = require('node-fetch')
-const request = require('request');
+const fetch = require('./initFetch')
+const rawRequest = require('./rawRequest');
 const querystring = require("querystring");
 
 class FetchClass {
@@ -55,14 +55,7 @@ class FetchClass {
         body: dataString
     };
     
-    return new Promise((resolve, reject)=>{
-      request(options, (error, response, body) => {
-          if (!error && response.statusCode == 200) {
-            return resolve(body);
-          }
-          return reject(error)
-      });
-    })
+    return rawRequest(options)
   }
 
   sendData (w,id,userId,project,isQry,isMessage) {
@@ -104,15 +97,8 @@ class FetchClass {
         headers: headers,
         body: dataString
     };
-
-    return new Promise((resolve, reject)=>{
-      request(options, (error, response, body) => {
-          if (!error && response.statusCode == 200) {
-            return resolve(body);
-          }
-          return reject({error, body})
-      });
-    })
+    
+    return rawRequest(options)
   }
 
   getResult (W, filePath) {
