@@ -4,8 +4,8 @@ class AuthManager {
   constructor(task){
     this.task = task
     this.authObj = null
-    this.enuid = null
-    this.ensid = null
+    this.uid = null
+    this.sid = null
     this.cookieValue = null
     this.id = null
   }
@@ -20,8 +20,8 @@ class AuthManager {
     const {enuid = '', ensid = '', cookieValue = '', id= '', username = ''} = authObj
     console.log('[INFO] auth Obj is :', username)
     this.authObj = authObj
-    this.enuid = enuid
-    this.ensid = ensid
+    this.uid = enuid
+    this.sid = ensid
     this.cookieValue = cookieValue
     this.id = id
     this.cookieName = process.env.COOKIE_NAME
@@ -29,8 +29,8 @@ class AuthManager {
   }
 
   async process(){
-    const {enuid, ensid, cookieValue, cookieName, domain} = this
-    return this.task({enuid, ensid, cookieValue, cookieName, domain})
+    const {uid, sid, cookieValue, cookieName, domain} = this
+    return this.task({uid, sid, cookieValue, cookieName, domain})
   }
 
   async dropCurrentAuthAndRenew(){

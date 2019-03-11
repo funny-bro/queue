@@ -47,6 +47,10 @@ const processQueue = async (Body, ReceiptHandle, authConfig) => {
   // fail condition 2
   if(html.includes('錯誤')) return console.log('[ERROR]', '錯誤')
 
+  if(html || json) {
+    console.log('Found html and json : ', json)
+  }
+
   const sectionInfo = {
     cityCode,
     townCode,
@@ -59,16 +63,17 @@ const processQueue = async (Body, ReceiptHandle, authConfig) => {
   await sqs.deleteMessage(SQS_URL, ReceiptHandle)
 }
 
-const main = async (authConfig) => {
+const sqsConsumerTask = async (authConfig) => {
   count +=1 
   if(count%30 ===0) console.log(` -=-=-=-=-=-= processed ${count} messages`)
-  const {enuid, ensid, cookieValue} = authConfig
+
+  const {uid, sid, cookieValue} = authConfig
   const {Body, ReceiptHandle} = await fetchMessage(authConfig)
   if(Body && ReceiptHandle ) {
     await processQueue(Body, ReceiptHandle, authConfig)
-    return main({enuid, ensid, cookieValue})
+    return sqsConsumerTask({uid, sid, cookieValue})
   }
   return
 }
 
-module.exports = main
+module.exports = sqsConsumerTask

@@ -33,6 +33,9 @@ class FetchClass {
   cmd(payload){
     const {domain, cookieName, cookieValue, sid, uid} = this
     const {cityCode, townCode, sectCode, landBuild, project = '05'} = payload
+
+    if(!domain || !cookieName || !cookieValue || !sid || !uid) throw new Error(`missing param in cmd, domain=${domain},cookieName=${cookieName},cookieValue=${cookieValue},qid=${sid},uid=${uid},`)
+
     const headers = {
         'Origin': `https://${domain}`,
         'Accept-Encoding': 'gzip, deflate, br',
@@ -46,7 +49,8 @@ class FetchClass {
         'Cookie': `${cookieName}=${cookieValue}`
     };
 
-    const dataString = `project=${project}&city=${cityCode}&town=${townCode}&sectno=${sectCode}&landbuild=${landBuild}&code=&sn_type=onwer&qry_cl=2&menu_cl=2&uid=${uid}&sid=${sid}`;
+    // qid = sid
+    const dataString = `project=${project}&city=${cityCode}&town=${townCode}&sectno=${sectCode}&landbuild=${landBuild}&code=&sn_type=onwer&qry_cl=2&menu_cl=2&uid=${uid}&qid=${sid}`;
 
     const options = {
         url: `https://${domain}/Cmd_getCmd`,
@@ -84,11 +88,12 @@ class FetchClass {
       'Cookie': `${cookieName}=${cookieValue}`
     };
 
+    // qid = sid
     const dataString = querystring.stringify({
       w, 
       file_path: filePath,
       now_charge: 0,
-      sid
+      qid: sid
     })
     
     const options = {

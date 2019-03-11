@@ -11,10 +11,10 @@
     {cityCode : 'H', townCode : 'H06', sectCode : '0810', landBuild : 222, project : '0B'}, // multiple result
   ]
   
-  const enuid = process.env.ENUID
-  const ensid = process.env.ENSID
+  const uid = process.env.ENUID
+  const sid = process.env.ENSID
   const cookieValue = process.env.COOKIE_VALUE
-  const authConfig = {enuid, ensid, cookieValue}
+  const authConfig = {uid, sid, cookieValue}
 
   for(let i =0 ;i<dataList.length; i++){
     try {
