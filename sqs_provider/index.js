@@ -7,7 +7,7 @@
   const project = '0B'
   const MIN_LANDBUILD_MAX = 100
   const DEFAULT_CITY_CODE = 'F'
-  const DEFAULT_TOWN_CODE = 'F05'
+  const DEFAULT_TOWN_CODE = 'F28'
 
   const isQueueEmpty = async () => {  
     const recieveResponse = await sqs.receiveMessage(SQS_URL)
