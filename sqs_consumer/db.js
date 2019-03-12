@@ -11,6 +11,9 @@ const createOrUpdate = async (landBuildInfo = {}, sectInfo = {}) => {
       throw new Error('[Error] section not found')
     }
 
+    const payload = { executedAt : new Date()}
+    const res = await SectionDao.update(payload,sectInfo)
+
     const landBuildRecordOBj = await landBuildRecordDao.findOne({
       landBuild: `${landBuild}`,
       sectionId: `${existedSectionObj.id}`
