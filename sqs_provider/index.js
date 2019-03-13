@@ -1,11 +1,11 @@
 (async function(){
   const sqs = require('../lib/sqs')
   const sectionDao = require('../db/section/dao')
-  const Op = require('Sequelize').Op
+  const Op = require('sequelize').Op
 
   const SQS_URL = process.env.SQS_URL
   const project = '0B'
-  const MIN_LANDBUILD_MAX = 100
+  const MIN_LANDBUILD_MAX = 52
   const DEFAULT_CITY_CODE = 'F'
   const DEFAULT_TOWN_CODE = 'F28'
 

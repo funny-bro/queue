@@ -6,6 +6,7 @@
   "scripts": {
     "consumer": "node sqs_consumer/index.js",
     "provider": "node sqs_provider/index.js",
+    "cron": "node cron/cronManager",
     "initsection": "node script/initDbSection",
     "initlandbuildmax": "node script/initLandBuildMax",
     "sqsprovider": "node sqs_provider.js",
@@ -26,6 +27,7 @@
     "cheerio": "^1.0.0-rc.2",
     "jsonschema": "^1.2.4",
     "mysql2": "^1.6.4",
+    "node-cron": "^2.0.3",
     "node-fetch": "^2.3.0",
     "sequelize": "^4.42.0"
   },
