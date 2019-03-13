@@ -19,3 +19,12 @@ cron.schedule('0 13 * * *', function(){
       console.log('Consumer job done ... ')
   });
 });
+
+// run provider every 13:00
+cron.schedule('0 16 * * *', function(){
+  var shell = require('./childHelper');
+  var commandList = ["node script/updateHistory.js"]
+  shell.series(commandList , function(err){
+      console.log('update history job done ... ')
+  });
+});
