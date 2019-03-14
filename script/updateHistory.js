@@ -22,7 +22,7 @@
   })
 
   const resSection = await sectionDao.findAndCountAll({
-    updatedAt: {
+    executedAt: {
       [Op.gte]: hourAgo10,
       [Op.lt]: today
     }
