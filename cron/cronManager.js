@@ -11,8 +11,8 @@ cron.schedule('0 11 * * *', function(){
   });
 });
 
-// run provider every 13:00
-cron.schedule('0 13 * * *', function(){
+// run provider every 14:36
+cron.schedule('36 14 * * *', function(){
   var shell = require('./childHelper');
   var commandList = ["yarn consumer"]
   shell.series(commandList , function(err){
@@ -20,7 +20,7 @@ cron.schedule('0 13 * * *', function(){
   });
 });
 
-// run provider every 13:00
+// run history every 16:00
 cron.schedule('0 16 * * *', function(){
   var shell = require('./childHelper');
   var commandList = ["node script/updateHistory.js"]
