@@ -3,7 +3,7 @@ var cron = require('node-cron');
 console.log('[INFO] cron job is started ...')
 
 // run provider every 11:00
-cron.schedule('0 11 * * *', function(){
+cron.schedule('20 12 * * *', function(){
   var shell = require('./childHelper');
   var commandList = ["yarn provider"]
   shell.series(commandList , function(err){

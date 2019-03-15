@@ -1,6 +1,8 @@
 (async function(){
   const sqs = require('../lib/sqs')
   const sectionDao = require('../db/section/dao')
+  const landBuildRecordDao = require('../db/landBuildRecord/dao')
+
   const Op = require('sequelize').Op
 
   const SQS_URL = process.env.SQS_URL
@@ -8,6 +10,12 @@
   const MIN_LANDBUILD_MAX = 52
   const DEFAULT_CITY_CODE = 'F'
   const DEFAULT_TOWN_CODE = 'F28'
+
+
+  const withinNHour = (targetDate, n = 10) => {
+    const ONE_HOUR = 60 * 60 * 1000; /* ms */
+    return ((new Date) - targetDate) < n * ONE_HOUR
+  }
 
   const isQueueEmpty = async () => {  
     const recieveResponse = await sqs.receiveMessage(SQS_URL)
@@ -26,7 +34,14 @@
 
     for(let i=1;i<=landBuildMax;i++){
       const landBuild = i 
-      // console.log(`[INFO] adding message to queue: cityCode = ${cityCode}, townCode = ${townCode}, sectCode = ${sectCode}, landBuild = ${landBuild}, project = ${project}`)
+
+      const landBuildRes = await landBuildRecordDao.findOne({sectionId: id, landBuild}) || {}
+      if(landBuildRes.updatedAt && withinNHour(landBuildRes.updatedAt, 4*24)){
+        console.log('[INFO] landbuld is already update within 4days, skip')
+        continue
+      }
+
+      console.log(`[INFO] adding message to queue: cityCode = ${cityCode}, townCode = ${townCode}, sectCode = ${sectCode}, landBuild = ${landBuild}, project = ${project}`)
       await sqs.sendMessage(SQS_URL, JSON.stringify({cityCode, townCode, sectCode, landBuild, project}))
     }
 
