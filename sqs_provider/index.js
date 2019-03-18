@@ -9,7 +9,7 @@
   const project = '0B'
   const MIN_LANDBUILD_MAX = 52
   const DEFAULT_CITY_CODE = 'F'
-  const DEFAULT_TOWN_CODE = 'F28'
+  const DEFAULT_TOWN_CODE = 'F18'
 
 
   const withinNHour = (targetDate, n = 10) => {
