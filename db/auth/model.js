@@ -14,7 +14,10 @@ const Auth = sequelize.define('auth', {
   cookieValue: {type: Sequelize.STRING, allowNull: false },
   ensid: {type: Sequelize.STRING, allowNull: false },
   enuid: {type: Sequelize.STRING, allowNull: false },
-  status: {type: Sequelize.STRING, allowNull: true },
+  cfid: {type: Sequelize.STRING, allowNull: true },
+  cftoken: {type: Sequelize.STRING, allowNull: true },
+  status: {type: Sequelize.STRING, allowNull: true },  
+  statusNat: {type: Sequelize.STRING, allowNull: true },  
   createdAt: Sequelize.DATE,
   updatedAt: Sequelize.DATE,
 });

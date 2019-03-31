@@ -3,7 +3,7 @@ var cron = require('node-cron');
 console.log('[INFO] cron job is started ...')
 
 // run provider every 11:00
-cron.schedule('20 12 * * *', function(){
+cron.schedule('0 12 * * *', function(){
   var shell = require('./childHelper');
   var commandList = ["yarn provider"]
   shell.series(commandList , function(err){
@@ -26,5 +26,13 @@ cron.schedule('0 18 * * *', function(){
   var commandList = ["node script/updateHistory.js"]
   shell.series(commandList , function(err){
       console.log('update history job done ... ')
+  });
+});
+
+cron.schedule('30 * * * *', function(){
+  var shell = require('./childHelper');
+  var commandList = ["curl https://zd-web.herokuapp.com/"]
+  shell.series(commandList , function(err){
+      console.log('wake up heroku ... ')
   });
 });

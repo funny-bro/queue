@@ -1,5 +1,4 @@
 const fetch = require('./initFetch')
-const pMg = require('../lib/processManager')
 const rawRequest = require('./rawRequest');
 const querystring = require("querystring");
 

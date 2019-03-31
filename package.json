@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "consumer": "node sqs_consumer/index.js",
+    "consumer": "node sqs_consumer/default.js",
     "provider": "node sqs_provider/index.js",
     "cron": "node cron/cronManager",
     "initsection": "node script/initDbSection",
