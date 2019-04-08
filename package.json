@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "consumer": "node sqs_consumer/default.js",
+    "init:nat": "curl -O https://s3-ap-northeast-1.amazonaws.com/zhengdao/nat.district.json",
+    "consumer": "node sqs_consumer/index.js",
+    "consumer:nat": "node sqs_consumer_nat/index.js",
     "provider": "node sqs_provider/index.js",
     "cron": "node cron/cronManager",
     "initsection": "node script/initDbSection",
@@ -25,6 +27,7 @@
   "dependencies": {
     "aws-sdk": "^2.382.0",
     "cheerio": "^1.0.0-rc.2",
+    "iconv": "^2.3.3",
     "jsonschema": "^1.2.4",
     "mysql2": "^1.6.4",
     "node-cron": "^2.0.3",

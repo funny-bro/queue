@@ -1,5 +1,5 @@
 (async function(){
-  const AuthMag = require('./authManager')
+  const AuthMag = require('../lib/authManager/default')
   const sqsConsumerTask = require('./sqs_consumer')
 
   const am = new AuthMag(sqsConsumerTask)
