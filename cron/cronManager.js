@@ -27,16 +27,10 @@ cron.schedule(CONSUMER_CRON, function(){
       console.log('Consumer-1 job done ... ')
       shell.series(["yarn consumouer:nat"] , function(err){
           console.log('Consumer-nat job done ... ')
+          shell.series(["node script/updateHistory.js"] , function(err){
+            console.log('update history job done ... ')
+        });
       });
-  });
-});
-
-// run history every 16:00
-cron.schedule(HISTORY_CRON, function(){
-  var shell = require('./childHelper');
-  var commandList = ["node script/updateHistory.js"]
-  shell.series(commandList , function(err){
-      console.log('update history job done ... ')
   });
 });
 
