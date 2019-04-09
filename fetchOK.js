@@ -11,9 +11,13 @@
     {cityCode : 'H', townCode : 'H06', sectCode : '0810', landBuild : 222, project : '0B'}, // multiple result
   ]
   
-  const uid = process.env.ENUID
-  const sid = process.env.ENSID
-  const cookieValue = process.env.COOKIE_VALUE
+  // const uid = process.env.ENUID
+  // const sid = process.env.ENSID
+  // const cookieValue = process.env.COOKIE_VALUE
+  const uid ='ZmNDTGVGK04xTVdPQVBHdmVNblhXUT09'
+  const sid = 'd1JsUkExVWhFaFlTcSs2RURHR1k0UT09'
+  const cookieValue = '388205301EFB8B37D1CD09BB0CEB89A8'
+
   const authConfig = {uid, sid, cookieValue}
 
   for(let i =0 ;i<dataList.length; i++){
