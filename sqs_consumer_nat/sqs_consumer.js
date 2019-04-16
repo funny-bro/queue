@@ -45,25 +45,25 @@ const processQueue = async (Body, ReceiptHandle, authConfig) => {
   
   // fail condition 1
   if(resString.includes('<<查詢結果>>error<</查詢結果>>')) {
-    console.log('[INFO] empty landBuild')
+    console.log('[CONDITION1] empty landBuild')
     // go ahead if they are empty
     // throw new Error('null html or json')
   }
-  // fail condition 1
+  // fail condition 2
   if(resString.includes('未取得使用授權而欲進入本系統')) {
-    console.log('[INFO] 未取得使用授權而欲進入本系統')
+    console.log('[CONDITION2] 未取得使用授權而欲進入本系統')
     throw {
       message: '未取得使用授權而欲進入本系統',
       isResetAuth: true
     }
   }
-
+  // fail condition 3
   if(resString.includes('<table class="cfdump_struct">')){
-    console.log('[INFO] empty landBuild: class=cfdump_struct')
+    console.log('[CONDITION3] empty landBuild: class=cfdump_struct')
   }
-
+  // fail condition 4
   if(!resString)  {
-    console.log('[INFO] null ResString')
+    console.log('[CONDITION4] null ResString')
   }
 
   if(resString.includes('<<查詢結果>>OK<</查詢結果>>')) {
