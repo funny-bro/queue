@@ -3,9 +3,9 @@ const htmlParserNat = require('../lib/htmlParserNat')
 const {innerRequest} = require('../lib/natApi/')
 const db = require('./db')
 const SQS_URL = process.env.SQS_URL
-const MAX_COND3_COUNT = 15
+const MAX_EMPTY_DATA_COUNT = 20
 let count = 0
-let cond3Count = 0
+let emptyDataCount = 0
 
 const sleep = (second = 3) => new Promise(resolve => setTimeout(() => resolve(), second * 1000))
 
@@ -47,14 +47,12 @@ const processQueue = async (Body, ReceiptHandle, authConfig) => {
   // fail condition 1
   if(resString.includes('<<查詢結果>>error<</查詢結果>>')) {
     console.log('[CONDITION1] empty landBuild')
-    cond3Count = 0
     // go ahead if they are empty
     // throw new Error('null html or json')
   }
   // fail condition 2
   if(resString.includes('未取得使用授權而欲進入本系統')) {
     console.log('[CONDITION2] 未取得使用授權而欲進入本系統')
-    cond3Count = 0
     throw {
       message: '未取得使用授權而欲進入本系統',
       isResetAuth: true
@@ -62,20 +60,20 @@ const processQueue = async (Body, ReceiptHandle, authConfig) => {
   }
   // fail condition 3
   if(resString.includes('<table class="cfdump_struct">')){
-    // cond3Count+=1
     console.log('[CONDITION3] class=cfdump_struct')
   }
   // fail condition 4
   if(!resString)  {
-    cond3Count = 0
     console.log('[CONDITION4] null ResString')
   }
 
+  emptyDataCount += 1
   if(resString.includes('<<查詢結果>>OK<</查詢結果>>')) {
     console.log(' -=-=-=- good -=-=-= includes ＊', resString.includes('＊'))
     // require('fs').writeFileSync(`./test_${new Date().getTime()}.txt`, resString)
     json = htmlParserNat.parser(resString)
-  }
+    emptyDataCount = 0
+  } 
 
   // require('fs').writeFileSync(`./test_${new Date().getTime()}.txt`, resString)
 
@@ -92,14 +90,14 @@ const processQueue = async (Body, ReceiptHandle, authConfig) => {
 
 const sqsConsumerTask = async (authConfig) => {
   count +=1 
-  if(count%30 ===0) console.log(` -=-=-=-=-=-= processed ${count} messages: cond3Count: ${cond3Count}`)
+  if(count%30 ===0) console.log(` -=-=-=-=-=-= processed ${count} messages: emptyDataCount: ${emptyDataCount}`)
 
-  if(cond3Count >= MAX_COND3_COUNT) {
+  if(emptyDataCount >= MAX_EMPTY_DATA_COUNT) {
     const t = count
     count = 0
-    cond3Count = 0
+    emptyDataCount = 0
     throw{
-      message: `[INFO] hit design limit ${MAX_COND3_COUNT}`,
+      message: `[INFO] hit design limit ${MAX_EMPTY_DATA_COUNT}`,
       count: t,
       isResetAuth: true
     }
