@@ -62,8 +62,8 @@ const processQueue = async (Body, ReceiptHandle, authConfig) => {
   }
   // fail condition 3
   if(resString.includes('<table class="cfdump_struct">')){
-    cond3Count+=1
-    console.log('[CONDITION3] empty landBuild: class=cfdump_struct')
+    // cond3Count+=1
+    console.log('[CONDITION3] class=cfdump_struct')
   }
   // fail condition 4
   if(!resString)  {
@@ -109,8 +109,8 @@ const sqsConsumerTask = async (authConfig) => {
   const {Body, ReceiptHandle} = await fetchMessage(authConfig)
   if(Body && ReceiptHandle ) {
     await processQueue(Body, ReceiptHandle, authConfig)
-    return sqsConsumerTask({cookieValue, cfid, cftoken})
     await sleep(3)
+    return sqsConsumerTask({cookieValue, cfid, cftoken})
   }
 
 }
